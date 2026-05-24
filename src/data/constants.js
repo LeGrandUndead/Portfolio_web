@@ -120,7 +120,7 @@ export const TERMINAL_COMMANDS = {
   → social     Réseaux sociaux
   → clear      Effacer le terminal`,
 
-  contact: `📧 Email    : kevinmowilli@email.com
+  contact: `📧 Email    : kevinmowilliam@email.com
 📍 Location  : France (disponible en remote)
 💼 Dispo     : Stage / Alternance Master`,
 
