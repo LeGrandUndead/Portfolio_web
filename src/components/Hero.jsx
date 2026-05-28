@@ -108,16 +108,6 @@ export default function Hero() {
           >
             Voir mes projets <IconArrowRight size={16} />
           </motion.a>
-          <motion.a
-            href={LINKS.cv}
-            download
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.96 }}
-            className="flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm border"
-            style={{ borderColor: COLORS.border, color: COLORS.textDim, background: "rgba(255,255,255,0.03)" }}
-          >
-            <IconDownload size={16} /> Télécharger CV
-          </motion.a>
         </motion.div>
 
         {/* Scroll hint */}
