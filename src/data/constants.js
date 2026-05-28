@@ -27,7 +27,7 @@ export const LINKS = {
   github: "https://github.com/LeGrandUndead",
   linkedin: "https://www.linkedin.com/in/kevin-william-2a4391210/",
   email: "kevinmowilliam@email.com",
-  cv: "/CV_KEVIN_WILLIAM_DAS.pdf",
+  cv: "CV_KEVIN_WILLIAM_DAS.pdf",
 };
 
 export const PROJECTS = [
