@@ -26,8 +26,8 @@ export const BIO = `Étudiant en L3 Informatique, je construis des applications 
 export const LINKS = {
   github: "https://github.com/LeGrandUndead",
   linkedin: "https://www.linkedin.com/in/kevin-william-2a4391210/",
-  email: "kevinmowilli@email.com",
-  cv: "/cv.pdf",
+  email: "kevinmowilliam@email.com",
+  cv: "/CV_KEVIN_WILLIAM_DAS.pdf",
 };
 
 export const PROJECTS = [
