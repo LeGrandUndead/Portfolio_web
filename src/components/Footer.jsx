@@ -1,11 +1,18 @@
-import { COLORS, NAME } from "../data/constants";
+import { COLORS, NAME, CONTENT } from "../data/constants";
 
-export default function Footer() {
+export default function Footer({ lang }) {
+  const t = CONTENT[lang];
   return (
-    <footer className="py-8 px-6 border-t text-center" style={{ borderColor: COLORS.border }}>
-      <p className="text-xs font-mono" style={{ color: COLORS.textMuted }}>
-        Conçu & codé par{" "}
-        <span style={{ color: COLORS.neonViolet }}>{NAME}</span> · {new Date().getFullYear()}
+    <footer style={{
+      padding: "2rem 1.5rem",
+      borderTop: `1px solid ${COLORS.border}`,
+      textAlign: "center",
+    }}>
+      <p style={{ fontSize: "0.7rem", fontFamily: "'JetBrains Mono', monospace", color: COLORS.textMuted }}>
+        {t.footerText}{" "}
+        <span style={{ color: COLORS.amber }}>{NAME}</span>
+        {" · "}
+        {new Date().getFullYear()}
       </p>
     </footer>
   );

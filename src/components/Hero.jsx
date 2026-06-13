@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { COLORS, NAME, LINKS } from "../data/constants";
-import { IconArrowRight, IconDownload } from "../icons/Icons";
+import { COLORS, NAME, LINKS, CONTENT } from "../data/constants";
 
 function TypewriterText({ words }) {
   const [idx, setIdx] = useState(0);
@@ -12,11 +11,11 @@ function TypewriterText({ words }) {
     const word = words[idx];
     let timeout;
     if (!deleting && displayed.length < word.length) {
-      timeout = setTimeout(() => setDisplayed(word.slice(0, displayed.length + 1)), 80);
+      timeout = setTimeout(() => setDisplayed(word.slice(0, displayed.length + 1)), 75);
     } else if (!deleting && displayed.length === word.length) {
-      timeout = setTimeout(() => setDeleting(true), 2000);
+      timeout = setTimeout(() => setDeleting(true), 2200);
     } else if (deleting && displayed.length > 0) {
-      timeout = setTimeout(() => setDisplayed(displayed.slice(0, -1)), 40);
+      timeout = setTimeout(() => setDisplayed(displayed.slice(0, -1)), 38);
     } else if (deleting && displayed.length === 0) {
       setDeleting(false);
       setIdx((prev) => (prev + 1) % words.length);
@@ -26,106 +25,205 @@ function TypewriterText({ words }) {
 
   return (
     <span>
-      <span style={{ color: COLORS.neonCyan }}>{displayed}</span>
+      <span style={{ color: COLORS.amber }}>{displayed}</span>
       <motion.span
         animate={{ opacity: [1, 0, 1] }}
-        transition={{ duration: 0.8, repeat: Infinity }}
-        style={{ color: COLORS.neonBlue }}
+        transition={{ duration: 0.75, repeat: Infinity }}
+        style={{ color: COLORS.amberDim }}
       >
-        |
+        _
       </motion.span>
     </span>
   );
 }
 
-export default function Hero() {
+export default function Hero({ lang }) {
+  const t = CONTENT[lang];
+
   return (
-    <section className="relative min-h-screen flex items-center justify-center px-6 pt-20">
-      <div className="max-w-4xl w-full">
-        {/* Badge */}
+    <section style={{ position: "relative", minHeight: "100vh", display: "flex", alignItems: "center", padding: "6rem 1.5rem 4rem" }}>
+      {/* Horizontal amber accent line */}
+      <motion.div
+        style={{
+          position: "absolute", left: 0, right: 0, top: "42%",
+          height: "1px",
+          background: `linear-gradient(90deg, transparent 0%, ${COLORS.amber}28 30%, ${COLORS.amber}14 70%, transparent 100%)`,
+          pointerEvents: "none",
+        }}
+        initial={{ scaleX: 0, opacity: 0 }}
+        animate={{ scaleX: 1, opacity: 1 }}
+        transition={{ delay: 1.2, duration: 1.4, ease: "easeOut" }}
+      />
+
+      <div style={{ maxWidth: "72rem", width: "100%", margin: "0 auto" }}>
+        {/* Available badge */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-mono mb-8 border"
-          style={{ borderColor: COLORS.border, color: COLORS.textDim, background: "rgba(59,130,246,0.08)" }}
+          style={{
+            display: "inline-flex", alignItems: "center", gap: "0.625rem",
+            padding: "0.5rem 1rem", borderRadius: "9999px",
+            fontSize: "0.7rem", fontFamily: "'JetBrains Mono', monospace",
+            border: `1px solid ${COLORS.amber}30`,
+            color: COLORS.textDim,
+            background: `${COLORS.amber}08`,
+            marginBottom: "2.5rem",
+          }}
         >
           <motion.span
-            className="w-2 h-2 rounded-full"
-            style={{ background: "#22c55e" }}
-            animate={{ opacity: [1, 0.4, 1] }}
+            style={{ width: 6, height: 6, borderRadius: "50%", background: "#22c55e", display: "inline-block" }}
+            animate={{ opacity: [1, 0.3, 1] }}
             transition={{ duration: 2, repeat: Infinity }}
           />
-          Disponible pour une alternance Master
+          {t.heroAvailable}
         </motion.div>
 
-        {/* Name */}
-        <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.8 }}
-          className="text-5xl md:text-7xl font-black mb-4 leading-none"
-          style={{ fontFamily: "'Space Grotesk', sans-serif", color: COLORS.text }}
-        >
-          {NAME}
-        </motion.h1>
+        {/* Name — editorial split */}
+        <div style={{ position: "relative", marginBottom: "1.5rem" }}>
+          <motion.h1
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.35, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+            style={{
+              fontFamily: "'Syne', sans-serif",
+              fontSize: "clamp(3.5rem, 11vw, 9rem)",
+              fontWeight: 800,
+              lineHeight: 1,
+              letterSpacing: "-0.02em",
+              color: COLORS.white,
+              margin: 0,
+            }}
+          >
+            Kevin
+          </motion.h1>
+          <motion.h1
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.48, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+            style={{
+              fontFamily: "'Syne', sans-serif",
+              fontSize: "clamp(3.5rem, 11vw, 9rem)",
+              fontWeight: 800,
+              lineHeight: 1,
+              letterSpacing: "-0.02em",
+              WebkitTextStroke: `2px ${COLORS.white}`,
+              color: "transparent",
+              margin: 0,
+            }}
+          >
+            William
+          </motion.h1>
 
-        {/* Typewriter */}
+          {/* Amber slash accent — desktop only */}
+          <motion.div
+            className="hidden md:block"
+            style={{
+              position: "absolute",
+              right: "8%", top: "15%",
+              width: "3px", height: "58%",
+              background: COLORS.amber,
+              transform: "rotate(12deg)",
+              transformOrigin: "top center",
+            }}
+            initial={{ scaleY: 0, opacity: 0 }}
+            animate={{ scaleY: 1, opacity: 1 }}
+            transition={{ delay: 0.9, duration: 0.5 }}
+          />
+        </div>
+
+        {/* Typewriter role */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="text-2xl md:text-4xl font-bold mb-6"
-        >
-          <span style={{ color: COLORS.textMuted }}>Je construis </span>
-          <TypewriterText words={["des apps React.", "des APIs Node.js.", "des scripts Python.", "des UIs qui captivent.", "des IA.", "Des réseaux."]} />
-        </motion.div>
-
-        {/* Sub */}
-        <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8 }}
-          className="text-base md:text-lg max-w-xl mb-10 leading-relaxed"
-          style={{ color: COLORS.textDim }}
+          transition={{ delay: 0.7 }}
+          style={{
+            fontSize: "clamp(1rem, 2.5vw, 1.75rem)",
+            fontFamily: "'JetBrains Mono', monospace",
+            color: COLORS.textDim,
+            marginBottom: "2rem",
+          }}
         >
-          Étudiant en Master Informatique. Passionné par les interfaces réactives, les architectures propres et tout ce qui rend le code élégant.
+          {t.bioIntro}<TypewriterText words={t.roleWords} />
+        </motion.div>
+
+        {/* Bio */}
+        <motion.p
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.88 }}
+          style={{
+            fontSize: "0.875rem",
+            maxWidth: "36rem",
+            marginBottom: "3rem",
+            lineHeight: 1.75,
+            color: COLORS.textDim,
+            fontFamily: "'JetBrains Mono', monospace",
+          }}
+        >
+          {t.bio}
         </motion.p>
 
         {/* CTAs */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1 }}
-          className="flex flex-wrap gap-4"
+          transition={{ delay: 1.05 }}
+          style={{ display: "flex", flexWrap: "wrap", gap: "1rem", alignItems: "center" }}
         >
           <motion.a
             href="#projects"
-            whileHover={{ scale: 1.04, boxShadow: `0 0 24px ${COLORS.neonBlue}55` }}
-            whileTap={{ scale: 0.96 }}
-            className="flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm"
-            style={{ background: `linear-gradient(135deg, ${COLORS.neonViolet}, #4f46e5)`, color: "#fff" }}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            style={{
+              display: "inline-flex", alignItems: "center", gap: "0.5rem",
+              padding: "0.875rem 1.75rem", borderRadius: "9999px",
+              fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: "0.875rem",
+              background: COLORS.amber, color: COLORS.bg,
+              textDecoration: "none",
+            }}
           >
-            Voir mes projets <IconArrowRight size={16} />
+            {t.heroCta} →
+          </motion.a>
+          <motion.a
+            href={LINKS.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            whileHover={{ scale: 1.03 }}
+            style={{
+              display: "inline-flex", alignItems: "center", gap: "0.5rem",
+              padding: "0.875rem 1.75rem", borderRadius: "9999px",
+              fontFamily: "'JetBrains Mono', monospace", fontSize: "0.875rem",
+              border: `1px solid ${COLORS.border}`,
+              color: COLORS.textDim,
+              textDecoration: "none",
+            }}
+          >
+            GitHub ↗
           </motion.a>
         </motion.div>
-
-        {/* Scroll hint */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.5 }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-        >
-          <span className="text-xs font-mono" style={{ color: COLORS.textMuted }}>scroll</span>
-          <motion.div
-            className="w-px h-10"
-            style={{ background: `linear-gradient(to bottom, ${COLORS.neonBlue}, transparent)` }}
-            animate={{ scaleY: [0, 1, 0], originY: 0 }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-          />
-        </motion.div>
       </div>
+
+      {/* Scroll indicator */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.8 }}
+        style={{
+          position: "absolute", bottom: "2.5rem", left: "50%",
+          transform: "translateX(-50%)",
+          display: "flex", flexDirection: "column", alignItems: "center", gap: "0.5rem",
+        }}
+      >
+        <span style={{ fontSize: "0.65rem", fontFamily: "'JetBrains Mono', monospace", letterSpacing: "0.25em", textTransform: "uppercase", color: COLORS.textMuted }}>
+          scroll
+        </span>
+        <motion.div
+          style={{ width: "1px", height: "2.5rem", background: `linear-gradient(to bottom, ${COLORS.amber}60, transparent)` }}
+          animate={{ scaleY: [0, 1, 0], originY: 0 }}
+          transition={{ duration: 1.6, repeat: Infinity }}
+        />
+      </motion.div>
     </section>
   );
 }

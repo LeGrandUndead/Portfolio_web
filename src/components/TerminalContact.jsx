@@ -1,19 +1,26 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, useInView } from "framer-motion";
-import { COLORS, NAME, LINKS, TERMINAL_COMMANDS } from "../data/constants";
-import { fadeUp, stagger } from "../utils/animations";
-import { IconMail, IconExternalLink, IconLink, IconChevronRight, IconTerminal } from "../icons/Icons";
-import SectionTitle from "./SectionTitle";
+import { COLORS, NAME, LINKS, CONTENT } from "../data/constants";
+import { IconTerminal } from "../icons/Icons";
 
-export default function TerminalContact() {
+const fadeUp = { hidden: { opacity: 0, y: 28 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] } } };
+const stagger = { visible: { transition: { staggerChildren: 0.12 } } };
+
+export default function TerminalContact({ lang }) {
+  const t = CONTENT[lang];
   const [input, setInput] = useState("");
   const [history, setHistory] = useState([
-    { type: "output", text: `Bienvenue sur le terminal de ${NAME}.\nTape "help" pour voir les commandes disponibles.` },
+    { type: "output", text: t.terminalWelcome(NAME) },
   ]);
   const inputRef = useRef(null);
   const bottomRef = useRef(null);
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
+
+  useEffect(() => {
+    setHistory([{ type: "output", text: t.terminalWelcome(NAME) }]);
+    setInput("");
+  }, [lang]);
 
   const isFirstRender = useRef(true);
   useEffect(() => {
@@ -26,29 +33,16 @@ export default function TerminalContact() {
 
   const runCommand = useCallback((cmd) => {
     const trimmed = cmd.trim().toLowerCase();
-    const result = TERMINAL_COMMANDS[trimmed];
-
+    const result = t.terminalCommands[trimmed];
     setHistory((prev) => [...prev, { type: "input", text: cmd }]);
-
     if (!result) {
-      setHistory((prev) => [
-        ...prev,
-        { type: "error", text: `Commande inconnue : "${trimmed}". Tape "help".` },
-      ]);
+      setHistory((prev) => [...prev, { type: "error", text: t.terminalUnknown(trimmed) }]);
       return;
     }
-
-    if (result === "__CLEAR__") {
-      setHistory([]);
-      return;
-    }
-
-    if (trimmed === "cv") {
-      window.open(LINKS.cv, "_blank");
-    }
-
+    if (result === "__CLEAR__") { setHistory([]); return; }
+    if (trimmed === "cv") window.open(LINKS.cv, "_blank");
     setHistory((prev) => [...prev, { type: "output", text: result }]);
-  }, []);
+  }, [t]);
 
   const onKeyDown = (e) => {
     if (e.key === "Enter" && input.trim()) {
@@ -58,66 +52,92 @@ export default function TerminalContact() {
   };
 
   return (
-    <section id="contact" ref={ref} className="py-32 px-6">
-      <div className="max-w-3xl mx-auto">
+    <section id="contact" ref={ref} style={{ padding: "8rem 1.5rem" }}>
+      <div style={{ maxWidth: "48rem", margin: "0 auto" }}>
         <motion.div variants={stagger} initial="hidden" animate={inView ? "visible" : "hidden"}>
-          <SectionTitle accent="04. contact">Prendre contact</SectionTitle>
+          <motion.p
+            variants={fadeUp}
+            style={{ fontSize: "0.65rem", fontFamily: "'JetBrains Mono', monospace", letterSpacing: "0.3em", textTransform: "uppercase", color: COLORS.amber, marginBottom: "0.75rem" }}
+          >
+            Contact
+          </motion.p>
+          <motion.h2
+            variants={fadeUp}
+            style={{ fontFamily: "'Syne', sans-serif", fontSize: "clamp(2rem, 4vw, 3.5rem)", fontWeight: 800, lineHeight: 1.1, color: COLORS.white, marginBottom: "3rem" }}
+          >
+            {t.contactTitle}
+          </motion.h2>
 
           {/* Social links */}
-          <motion.div variants={fadeUp} className="flex flex-wrap gap-4 mb-10">
+          <motion.div variants={fadeUp} style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem", marginBottom: "2.5rem" }}>
             {[
-              { href: LINKS.github, icon: <IconLink size={18} />, label: "GitHub" },
-              { href: LINKS.linkedin, icon: <IconExternalLink size={18} />, label: "LinkedIn" },
-              { href: `mailto:${LINKS.email}`, icon: <IconMail size={18} />, label: LINKS.email },
+              { href: LINKS.github, label: "GitHub ↗" },
+              { href: LINKS.linkedin, label: "LinkedIn ↗" },
+              { href: `mailto:${LINKS.email}`, label: LINKS.email },
             ].map((link) => (
               <motion.a
                 key={link.label}
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                whileHover={{ scale: 1.05, borderColor: COLORS.neonBlue }}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-mono border transition-colors"
-                style={{ borderColor: COLORS.border, color: COLORS.textDim, background: COLORS.bgCard }}
+                whileHover={{ scale: 1.03, borderColor: COLORS.amber, color: COLORS.amber }}
+                style={{
+                  display: "inline-flex", alignItems: "center",
+                  padding: "0.625rem 1.125rem",
+                  borderRadius: "9999px",
+                  fontSize: "0.72rem",
+                  fontFamily: "'JetBrains Mono', monospace",
+                  border: `1px solid ${COLORS.border}`,
+                  color: COLORS.textDim,
+                  background: COLORS.bgCard,
+                  textDecoration: "none",
+                  transition: "all 0.2s",
+                }}
               >
-                <span style={{ color: COLORS.neonBlue }}>{link.icon}</span>
                 {link.label}
               </motion.a>
             ))}
           </motion.div>
 
-          {/* Terminal window */}
+          {/* Terminal */}
           <motion.div
             variants={fadeUp}
-            className="rounded-2xl overflow-hidden border"
-            style={{ borderColor: COLORS.border, background: "#050810" }}
+            style={{
+              borderRadius: "1rem",
+              overflow: "hidden",
+              border: `1px solid ${COLORS.border}`,
+              background: "#040710",
+            }}
             onClick={() => inputRef.current?.focus()}
           >
             {/* Title bar */}
-            <div
-              className="flex items-center gap-2 px-4 py-3 border-b"
-              style={{ borderColor: COLORS.border, background: "#080b14" }}
-            >
-              <span className="w-3 h-3 rounded-full bg-red-500/70" />
-              <span className="w-3 h-3 rounded-full bg-yellow-500/70" />
-              <span className="w-3 h-3 rounded-full bg-green-500/70" />
-              <span className="ml-4 text-xs font-mono flex items-center gap-1" style={{ color: COLORS.textMuted }}>
-                <IconTerminal size={12} />
-                portfolio@{NAME.split(" ")[1]?.toLowerCase() || "user"}: ~
+            <div style={{
+              display: "flex", alignItems: "center", gap: "0.5rem",
+              padding: "0.75rem 1.25rem",
+              borderBottom: `1px solid ${COLORS.border}`,
+              background: "#070a16",
+            }}>
+              <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#ff5f57", display: "inline-block" }} />
+              <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#ffbd2e", display: "inline-block" }} />
+              <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#28c840", display: "inline-block" }} />
+              <span style={{ marginLeft: "1rem", fontSize: "0.7rem", fontFamily: "'JetBrains Mono', monospace", color: COLORS.textMuted, display: "flex", alignItems: "center", gap: "0.4rem" }}>
+                <IconTerminal size={11} />
+                <span style={{ color: COLORS.amber }}>portfolio</span>@{NAME.split(" ")[1]?.toLowerCase() || "user"}:~
               </span>
             </div>
 
             {/* Output */}
-            <div className="p-4 h-64 overflow-y-auto font-mono text-sm space-y-2">
+            <div style={{ padding: "1.25rem", height: "14rem", overflowY: "auto", fontFamily: "'JetBrains Mono', monospace", fontSize: "0.72rem" }}>
               {history.map((line, i) => (
-                <div key={i}>
+                <div key={i} style={{ marginBottom: "0.5rem" }}>
                   {line.type === "input" && (
-                    <div className="flex gap-2">
-                      <span style={{ color: COLORS.neonBlue }}>❯</span>
-                      <span style={{ color: COLORS.text }}>{line.text}</span>
+                    <div style={{ display: "flex", gap: "0.5rem" }}>
+                      <span style={{ color: COLORS.amber }}>❯</span>
+                      <span style={{ color: COLORS.white }}>{line.text}</span>
                     </div>
                   )}
                   {line.type === "output" && (
-                    <pre className="whitespace-pre-wrap leading-relaxed" style={{ color: COLORS.textDim }}>
+                    <pre style={{ whiteSpace: "pre-wrap", lineHeight: 1.7, color: COLORS.textDim, fontFamily: "inherit", margin: 0 }}>
                       {line.text}
                     </pre>
                   )}
@@ -130,35 +150,50 @@ export default function TerminalContact() {
             </div>
 
             {/* Input */}
-            <div
-              className="flex items-center gap-2 px-4 py-3 border-t"
-              style={{ borderColor: COLORS.border }}
-            >
-              <IconChevronRight size={14} style={{ color: COLORS.neonBlue }} />
+            <div style={{
+              display: "flex", alignItems: "center", gap: "0.5rem",
+              padding: "0.75rem 1.25rem",
+              borderTop: `1px solid ${COLORS.border}`,
+            }}>
+              <span style={{ color: COLORS.amber }}>❯</span>
               <input
                 ref={inputRef}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={onKeyDown}
-                placeholder="Tape une commande..."
-                className="flex-1 bg-transparent outline-none font-mono text-sm"
-                style={{ color: COLORS.text, caretColor: COLORS.neonBlue }}
+                placeholder={t.terminalPlaceholder}
+                style={{
+                  flex: 1, background: "transparent", outline: "none",
+                  border: "none",
+                  fontFamily: "'JetBrains Mono', monospace",
+                  fontSize: "0.72rem",
+                  color: COLORS.white,
+                  caretColor: COLORS.amber,
+                }}
                 spellCheck={false}
                 autoComplete="off"
               />
             </div>
           </motion.div>
 
-          {/* Quick command chips */}
-          <motion.div variants={fadeUp} className="flex flex-wrap gap-2 mt-4">
-            {["help", "contact", "cv", "social"].map((cmd) => (
+          {/* Quick chips */}
+          <motion.div variants={fadeUp} style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginTop: "1rem" }}>
+            {t.quickCmds.map((cmd) => (
               <motion.button
                 key={cmd}
                 onClick={() => runCommand(cmd)}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-3 py-1 rounded-lg text-xs font-mono border"
-                style={{ borderColor: COLORS.border, color: COLORS.textMuted, background: COLORS.bgCard }}
+                whileHover={{ scale: 1.05, borderColor: COLORS.amber, color: COLORS.amber }}
+                style={{
+                  padding: "0.3rem 0.75rem",
+                  borderRadius: "9999px",
+                  fontSize: "0.7rem",
+                  fontFamily: "'JetBrains Mono', monospace",
+                  border: `1px solid ${COLORS.border}`,
+                  color: COLORS.textMuted,
+                  background: COLORS.bgCard,
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                }}
               >
                 {cmd}
               </motion.button>

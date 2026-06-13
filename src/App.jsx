@@ -1,4 +1,4 @@
-import { AnimatePresence } from "framer-motion";
+import { useState } from "react";
 import { COLORS } from "./data/constants";
 
 import AnimatedBackground from "./components/AnimatedBackground";
@@ -11,18 +11,20 @@ import TerminalContact from "./components/TerminalContact";
 import Footer from "./components/Footer";
 
 export default function App() {
+  const [lang, setLang] = useState("fr");
+
   return (
-    <div className="min-h-screen relative" style={{ background: COLORS.bg, color: COLORS.text }}>
+    <div style={{ minHeight: "100vh", position: "relative", background: COLORS.bg, color: COLORS.text }}>
       <AnimatedBackground />
-      <Navbar />
-      <main className="relative z-10">
-        <Hero />
-        <About />
-        <Projects />
-        <Skills />
-        <TerminalContact />
+      <Navbar lang={lang} setLang={setLang} />
+      <main style={{ position: "relative", zIndex: 10 }}>
+        <Hero lang={lang} />
+        <About lang={lang} />
+        <Projects lang={lang} />
+        <Skills lang={lang} />
+        <TerminalContact lang={lang} />
       </main>
-      <Footer />
+      <Footer lang={lang} />
     </div>
   );
 }
