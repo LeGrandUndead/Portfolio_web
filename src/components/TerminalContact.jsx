@@ -17,7 +17,12 @@ export default function TerminalContact({ lang }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
 
+  const isFirstLangRender = useRef(true);
   useEffect(() => {
+    if (isFirstLangRender.current) {
+      isFirstLangRender.current = false;
+      return;
+    }
     setHistory([{ type: "output", text: t.terminalWelcome(NAME) }]);
     setInput("");
   }, [lang]);
