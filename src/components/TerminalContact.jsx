@@ -18,11 +18,13 @@ export default function TerminalContact({ lang }) {
   const inView = useInView(ref, { once: true, margin: "-80px" });
 
   const isFirstLangRender = useRef(true);
+  const skipScrollRef = useRef(false);  
   useEffect(() => {
     if (isFirstLangRender.current) {
       isFirstLangRender.current = false;
       return;
     }
+    skipScrollRef.current = true;
     setHistory([{ type: "output", text: t.terminalWelcome(NAME) }]);
     setInput("");
   }, [lang]);
@@ -31,6 +33,10 @@ export default function TerminalContact({ lang }) {
   useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
+      return;
+    }
+    if (skipScrollRef.current) {    
+      skipScrollRef.current = false;
       return;
     }
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });

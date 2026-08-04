@@ -56,29 +56,6 @@ export default function Hero({ lang }) {
       />
 
       <div style={{ maxWidth: "72rem", width: "100%", margin: "0 auto" }}>
-        {/* Available badge */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          style={{
-            display: "inline-flex", alignItems: "center", gap: "0.625rem",
-            padding: "0.5rem 1rem", borderRadius: "9999px",
-            fontSize: "0.7rem", fontFamily: "'JetBrains Mono', monospace",
-            border: `1px solid ${COLORS.amber}30`,
-            color: COLORS.textDim,
-            background: `${COLORS.amber}08`,
-            marginBottom: "2.5rem",
-          }}
-        >
-          <motion.span
-            style={{ width: 6, height: 6, borderRadius: "50%", background: "#22c55e", display: "inline-block" }}
-            animate={{ opacity: [1, 0.3, 1] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          />
-          {t.heroAvailable}
-        </motion.div>
-
         {/* Name — editorial split */}
         <div style={{ position: "relative", marginBottom: "1.5rem" }}>
           <motion.h1
@@ -144,7 +121,7 @@ export default function Hero({ lang }) {
             marginBottom: "2rem",
           }}
         >
-          {t.bioIntro}<TypewriterText words={t.roleWords} />
+          {t.bioIntro}<TypewriterText key={lang} words={t.roleWords} />
         </motion.div>
 
         {/* Bio */}
